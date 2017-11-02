@@ -32,13 +32,60 @@ public class TCPSendfile {
         try {
             fSend = new File(Filename);
             fileOutStream = new FileInputStream(fSend);
+            TCPFrameHeader tcpHeader= new TCPFrameHeader();
+            long count = fileOutStream.available();
+            while (count == 0) {
+                count = fileOutStream.available();
+            }
+            byte[] totalCount = new byte[8]; //将总数转为byte字符
+            //outputStream.write(totalCount);
+            tcpHeader.setLength(count);
+            tcpHeader.setIsPacket(false);
+            outputStream.write(tcpHeader.getHeaderData());
+            int PacketSize = 10240;//这里指定每包为10Kbyte
+
+            int PacketCount = (int) (count / ((long) PacketSize));//总包数
+
+            int LastDataPacket = (int) (count - ((long) (PacketSize * PacketCount)));//余字节数，也可能会是0
+            byte[] buffer = new byte[PacketSize];//设定缓冲区
+            for (int i = 0; i < PacketCount; i++) {
+
+                fileOutStream.read(buffer, 0, buffer.length);//将文件读到缓冲区
+//                byte[] bufferLength = new byte[4];//需要将buffer的长度转换为byte字节
+//                outputStream.write(bufferLength);//写入4个字节代表buffer的长度
+                outputStream.write(buffer);//将缓冲写入到流
+
+            }
+            if (LastDataPacket != 0) {
+                buffer = new byte[LastDataPacket];//重新设定缓冲区大小
+                fileOutStream.read(buffer, 0, buffer.length);//将文件读到缓冲区
+//                byte[] bufferLength = new byte[4];//需要将buffer的长度转换为byte字节
+//                outputStream.write(bufferLength);//写入4个字节代表buffer的长度
+                outputStream.write(buffer);//将缓冲写入到流
+            }
+            outputStream.flush();
+
+            fileOutStream.close();
+            //outputStream.close();
+            return true;
+        }
+        catch ( IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    };
+    public boolean SendFile(String Filename,int PacketSize)  {
+        try {
+            fSend = new File(Filename);
+            fileOutStream = new FileInputStream(fSend);
             long count = fileOutStream.available();
             while (count == 0) {
                 count = fileOutStream.available();
             }
             byte[] totalCount = new byte[8]; //将总数转为byte字符
             outputStream.write(totalCount);
-            int PacketSize = 10240;//这里指定每包为10Kbyte
+            if  (PacketSize==0) PacketSize = 10240;//这里指定每包为10Kbyte
 
             int PacketCount = (int) (count / ((long) PacketSize));//总包数
 

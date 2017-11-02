@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import com.androidyuan.lib.screenshot.ScreenShotActivity;
+import com.androidyuan.lib.screenshot.ScreenShotService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -21,5 +22,10 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(new Intent(this, ScreenShotActivity.class));
 
+    }
+    public void onClickStop(View view)
+    {
+        Intent intent=new Intent(this, ScreenShotService.class);
+        stopService(intent);
     }
 }

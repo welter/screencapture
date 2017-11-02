@@ -70,34 +70,18 @@ public class ScreenShotActivity extends Activity {
         switch (requestCode) {
             case REQUEST_MEDIA_PROJECTION: {
                 if (resultCode == -1 && data != null) {
-                    Shotter shotter=new Shotter(ScreenShotActivity.this,data);
+                    /*Shotter shotter=new Shotter(ScreenShotActivity.this,data);
                     shotter.startScreenShot(new Shotter.OnShotListener() {
                         @Override
                         public void onFinish() {
                             toast("shot finish!");
 
                         }
-                    });
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            t = new TCPSendfile("192.168.0.5",22222);
-                        }
-                    }).start();
-                    while (t==null){
+                    },Shotter.ResultType.RTNet);*/
+                    Intent intent=new Intent(this, ScreenShotService.class);
+                    intent.putExtra("ResultIntent", data);
+                    startService(intent);
 
-                    }
-                    s= Environment.getExternalStorageDirectory()+"/506.png";//shotter.mLocalUrl;
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            t.SendFile(s);
-                            isEnd=true;
-                        }
-                    };
-                    ExecutorService executorService = Executors.newSingleThreadExecutor();
-                    isEnd=false;
-                    while (!isEnd) executorService.execute(runnable);
                     finish(); // don't forget finish activity
                 }
             }

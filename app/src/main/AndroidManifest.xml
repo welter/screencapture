@@ -18,6 +18,9 @@
 
         <activity android:name="com.androidyuan.lib.screenshot.ScreenShotActivity"
                   android:theme="@android:style/Theme.Dialog" />
+        <service android:name="com.androidyuan.lib.screenshot.ScreenShotService"
+                 android:enabled="true"></service>
+        <receiver android:name="com.androidyuan.lib.screenshot.ScreenShotService$AlarmReceiver"></receiver>
     </application>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
